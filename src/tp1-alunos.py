@@ -10,7 +10,7 @@ RENDER_MODE = 'human'
 RENDER_MODE = None #seleccione esta opção para não visualizar o ambiente (testes mais rápidos)
 EPISODES = 1000
 
-env = gym.make("LunarLander-v3", render_mode =RENDER_MODE, 
+env = gym.make("LunarLander-v3", render_mode=RENDER_MODE, 
     continuous=True, gravity=GRAVITY, 
     enable_wind=ENABLE_WIND, wind_power=WIND_POWER, 
     turbulence_power=TURBULENCE_POWER)
@@ -201,10 +201,10 @@ def reactive_agent(observation):
     if (perceptions['px']>-(LANDING_SIZE-LANDER_SIZE)/2 and perceptions['px']<(LANDING_SIZE-LANDER_SIZE)/2 and perceptions['py']<LANDING_SIZE/2):
         #print("landed")
         action = actions['do_nothing']
-    elif (perceptions['av'] > 0.01):
+    elif (perceptions['av'] > 0.05):
         #print("angular velocity left: " + str(perceptions['av']))
         action = actions['rotate_right']
-    elif (perceptions['av'] < -0.01):
+    elif (perceptions['av'] < -0.05):
         #print("angular velocity right: " + str(perceptions['av']))
         action = actions['rotate_left']
     ##elif (perceptions['px']<-(LANDING_SIZE)/2 and perceptions['py']<LANDING_SIZE):
