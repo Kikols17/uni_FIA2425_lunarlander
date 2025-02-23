@@ -55,24 +55,32 @@ def simulate(steps=1000,seed=None, policy = None):
 
 #Perceptions
 def get_perceptions(observation):
+    # Estes valores constantes foram obtidos a olho
+    LANDING_WIDTH = 0.4
+    LANGING_HEIGHT = 0.2
+
+    SAFE_DESCENT_WIDTH = 0.2
+
+    SAFE_ZONE_HEIGHT = 0.5
+
     px = observation[0]
     py = observation[1]
-    vx = observation[2]
-    vy = observation[3]
-    a = observation[4]
-    av = observation[5]
-    l = observation[6]
-    r = observation[7]
 
     perceptions = {
-        'px': px,
-        'py': py,
-        'vx': vx,
-        'vy': vy,
-        'a': a,
-        'av': av,
-        'l': l,
-        'r': r
+        'zA': px>-(LANDING_WIDTH)/2 and px<(LANDING_WIDTH)/2 and py<LANGING_HEIGHT,
+        'zB': px>-(SAFE_DESCENT_WIDTH)/2 and px<(SAFE_DESCENT_WIDTH)/2,
+        'zC': px>-(LANDING_WIDTH)/2 and px<-(SAFE_DESCENT_WIDTH)/2 and py>LANGING_HEIGHT and py<SAFE_ZONE_HEIGHT,
+        'zD': px>(SAFE_DESCENT_WIDTH)/2 and px<(LANDING_WIDTH)/2 and py>LANGING_HEIGHT and py<SAFE_ZONE_HEIGHT,
+        'zE': px<-(LANDING_WIDTH)/2 and py<SAFE_ZONE_HEIGHT,
+        'zF': px>(LANDING_WIDTH)/2 and py<SAFE_ZONE_HEIGHT,
+        'zG': px<-(SAFE_DESCENT_WIDTH)/2 and py>SAFE_ZONE_HEIGHT,
+        'zH': px>(SAFE_DESCENT_WIDTH)/2 and py>SAFE_ZONE_HEIGHT,
+        'vx': observation[2],
+        'vy': observation[3],
+        'a': observation[4],
+        'av': observation[5],
+        'l': observation[6],
+        'r': observation[7]
     }
     
     return perceptions
@@ -81,6 +89,7 @@ def get_perceptions(observation):
 
 #Actions
 def get_actions():
+
     actions = {
         'do_nothing': [0, 0],
         'main_engine': [1.0, 0],
@@ -98,108 +107,10 @@ def reactive_agent(observation):
     ##Substitua a linha abaixo pela sua implementação
     actions = get_actions()
     perceptions = get_perceptions(observation)
-    
-    #if perceptions['px']>-0.1 and perceptions['px']<0.1 and perceptions['py']<0.2 and perceptions['l']==1 and perceptions['r']==1:
-    #    ##print("landed")
-    #    action = actions['do_nothing']
-    #elif perceptions['px']>-0.1 and perceptions['px']<0.1 and perceptions['py']<0.2:
-    #    ##print("landing at " + str(perceptions['px']) + " " + str(perceptions['py']))
-    #    action = actions['do_nothing']
-    #elif perceptions['px']>-0.1 and perceptions['px']<0.1 and perceptions['py']<0.2 and perceptions['a']<-0.1:
-    #    ##print("turning left to land")
-    #    action = actions['right_engine']
-    #elif perceptions['px']>-0.1 and perceptions['px']<0.1 and perceptions['py']<0.2 and perceptions['a']>0.1:
-    #    ##print("turning right to land")
-    #    action = actions['left_engine']
-    #elif perceptions['px']>-0.1 and perceptions['px']<0.1 and perceptions['vx']<-0.1:
-    #    ##print("moving left")
-    #    action = actions['right_engine']
-    #elif perceptions['px']>-0.1 and perceptions['px']<0.1 and perceptions['vx']>0.1:
-    #    ##print("moving right")
-    #    action = actions['left_engine']
-#
-    #elif perceptions['px']>-0.1 and perceptions['px']<0.1 and perceptions['vy']>-0.1:
-    #    ##print("descending slowly in the middle")
-    #    action = actions['do_nothing']
-    #elif perceptions['px']>-0.1 and perceptions['px']<0.1 and perceptions['vy']<-0.3:
-    #    ##print("descending too fast in the middle")
-    #    action = actions['main_engine']
-    #else:
-    #    ##print("hovering")
-    #    action = actions['do_nothing']
-    ##if perceptions['vy']<-0.1:
-    ##    ###print("slowing descent")
-    ##    action = actions['main_engine']
-    ##elif perceptions['a']>0.1:
-    ##    ###print("correcting angle to the right")
-    ##    action = actions['right_engine']
-    ##elif perceptions['a']<-0.1:
-    ##    ###print("correcting angle to the left")
-    ##    action = actions['left_engine']
-    ##else:
-    ##    ###print("hovering")
-    ##    action = actions['do_nothing']
-    ######if perceptions['l']==1 and perceptions['r']==1:
-    ######    ##print("landed")
-    ######    action = actions['do_nothing']
-    ######elif perceptions['px']>-0.1 and perceptions['px']<0.1 and perceptions['py']<0.2 and perceptions['a']<-0.1 and perceptions['a']<-0.1:
-    ######    ##print("landing at " + str(perceptions['px']) + " " + str(perceptions['py']))
-    ######    action = actions['do_nothing']
-    ######elif perceptions['px']>-0.1 and perceptions['px']<0.1 and perceptions['py']<0.2 and perceptions['a']<-0.1:
-    ######    ##print("turning left to land")
-    ######    action = actions['rotate_right']
-    ######elif perceptions['px']>-0.1 and perceptions['px']<0.1 and perceptions['py']<0.2 and perceptions['a']>0.1:
-    ######    ##print("turning right to land")
-    ######    action = actions['rotate_left']
-    ######
-    ######elif perceptions['a']>0.1:
-    ######    ##print("correcting angle to the right")
-    ######    action = actions['rotate_right']
-    ######elif perceptions['a']<-0.1:
-    ######    ##print("correcting angle to the left")
-    ######    action = actions['rotate_left']
-######
-    ######elif perceptions['px']>-0.1 and perceptions['px']<0.1 and perceptions['vx']<-0.1:
-    ######    ##print("moving left")
-    ######    action = actions['rotate_right']
-    ######elif perceptions['px']>-0.1 and perceptions['px']<0.1 and perceptions['vx']>0.1:
-    ######    ##print("moving right")
-    ######    action = actions['rotate_left']
-    ######elif perceptions['px']>-0.1 and perceptions['px']<0.1 and perceptions['vy']<-0.3:
-    ######    ##print("descending too fast in the middle")
-    ######    action = actions['main_engine']
-    ######elif perceptions['px']>-0.1 and perceptions['px']<0.1 and perceptions['vy']>-0.1:
-    ######    ##print("descending slowly in the middle")
-    ######    action = actions['do_nothing']
-    ######
-    ######elif perceptions['px']>-0.1 and perceptions['px']<0.1 and perceptions['vx']>-0.1 and perceptions['vx']<0.1:
-    ######    ##print("hovering")
-    ######    action = actions['do_nothing']
-######
-    ######elif perceptions['px']<-0.1 and perceptions['vx']<0.0:
-    ######    ##print("moving left")
-    ######    action = actions['go_right']
-    ######elif perceptions['px']<-0.1 and perceptions['vx']>0.0:
-    ######    ##print("moving right")
-    ######    action = actions['do_nothing']
-    ######elif perceptions['px']>0.1 and perceptions['vx']<0.0:
-    ######    ##print("moving left")
-    ######    action = actions['do_nothing']
-    ######elif perceptions['px']>0.1 and perceptions['vx']>0.0:
-    ######    ##print("moving right")
-    ######    action = actions['go_left']
-######
-    ######else:
-    ######    ##print("hovering")
-    ######    action = actions['do_nothing']
 
-    #print("position: " + str(perceptions['px']) + " " + str(perceptions['py']))
 
-    LANDING_SIZE = 0.4
-    LANDER_SIZE = 0.04
-    #print("position: " + str(perceptions['px']) + " " + str(perceptions['py']))
-    if (perceptions['px']>-(LANDING_SIZE-LANDER_SIZE)/2 and perceptions['px']<(LANDING_SIZE-LANDER_SIZE)/2 and perceptions['py']<LANDING_SIZE/2):
-        #print("landed")
+    if (perceptions['zA']):
+        #print("ready to land")
         action = actions['do_nothing']
     elif (perceptions['av'] > 0.05):
         #print("angular velocity left: " + str(perceptions['av']))
@@ -207,36 +118,37 @@ def reactive_agent(observation):
     elif (perceptions['av'] < -0.05):
         #print("angular velocity right: " + str(perceptions['av']))
         action = actions['rotate_left']
-    ##elif (perceptions['px']<-(LANDING_SIZE)/2 and perceptions['py']<LANDING_SIZE):
-    ##    #print("too low, left of landing pad, up")
-    ##    action = actions['main_engine']
-    ##elif (perceptions['px']>(LANDING_SIZE)/2 and perceptions['py']<LANDING_SIZE):
-    ##    #print("too low, right of landing pad, up")
-    ##    action = actions['main_engine']
-    elif (perceptions['vx'] > 0.01):
+    elif (perceptions['vx'] > 0.005):
         #print("Going right")
         action = actions['go_left']
-    elif (perceptions['vx'] < -0.01):
+    elif (perceptions['vx'] < -0.005):
         #print("Going left")
         action = actions['go_right']
     elif (perceptions['vy'] < -0.1):
         #print("SLOW DOWN")
         action = actions['main_engine']
-    elif (perceptions['px'] < -0.1):
-        #print("going left to land")
+    elif (perceptions['zB']):
+        #print("safe descent")
+        action = actions['do_nothing']
+    elif (perceptions['zC']):
+        #print("moving right to land")
         action = actions['go_right']
-    elif (perceptions['px'] > 0.1):
-        #print("going right to land")
+    elif (perceptions['zD']):
+        #print("moving left to land")
         action = actions['go_left']
-    #elif (perceptions['px'] > -0.1 and perceptions['px'] < 0.1 and perceptions['py'] < 0.1):
-    #    #print("landing")
-    #    action = actions['do_nothing']
-    #elif (perceptions['px'] < -0.1 ):
-    #    #print("moving left to land")
-    #    action = actions['go_left']
-    #elif (perceptions['px'] > 0.1):
-    #    #print("moving right to land")
-    #    action = actions['go_right']
+    elif (perceptions['zE']):
+        #print("unsafe left zone, move up!")
+        action = actions['main_engine']
+    elif (perceptions['zF']):
+        #print("unsafe right zone, move up!")
+        action = actions['main_engine']
+    elif (perceptions['zG']):
+        #print("safe left zone, move right")
+        action = actions['go_right']
+    elif (perceptions['zH']):
+        #print("safe right zone, move left")
+        action = actions['go_left']
+    
     else:
         #print("hovering")
         action = actions['do_nothing']
@@ -246,11 +158,32 @@ def reactive_agent(observation):
 def keyboard_agent(observation):
     action = [0,0] 
     keys = pygame.key.get_pressed()
+
+    perceptions = get_perceptions(observation)
+    print("zone: ", end="")
+    if perceptions['zA']:
+        print("A", end='')
+    if perceptions['zB']:
+        print("B", end='')
+    if perceptions['zC']:
+        print("C", end='')
+    if perceptions['zD']:
+        print("D", end='')
+    if perceptions['zE']:
+        print("E", end='')
+    if perceptions['zF']:
+        print("F", end='')
+    if perceptions['zG']:
+        print("G", end='')
+    if perceptions['zH']:
+        print("H", end='')
+    print("   " + str(observation[0]) + " " + str(observation[0]), end='')
+    print()
     
     ###print('observação:',observation)
     ##print('posição:',observation[0])
 
-    print("position: " + str(observation[0]) + " " + str(observation[1]))
+    #print("position: " + str(observation[0]) + " " + str(observation[1]))
     if keys[pygame.K_UP]:  
         action += np.array([1,0])
     if keys[pygame.K_LEFT]:  
