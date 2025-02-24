@@ -108,23 +108,27 @@ def reactive_agent(observation):
     actions = get_actions()
     perceptions = get_perceptions(observation)
 
+    MAX_A_SPEED = 0.05
+    MAX_X_SPEED = 0.005
+    MAX_Y_SPEED = -0.1
+
 
     if (perceptions['zA']):
         #print("ready to land")
         action = actions['do_nothing']
-    elif (perceptions['av'] > 0.05):
+    elif (perceptions['av'] > MAX_A_SPEED):
         #print("angular velocity left: " + str(perceptions['av']))
         action = actions['rotate_right']
-    elif (perceptions['av'] < -0.05):
+    elif (perceptions['av'] < -MAX_A_SPEED):
         #print("angular velocity right: " + str(perceptions['av']))
         action = actions['rotate_left']
-    elif (perceptions['vx'] > 0.005):
+    elif (perceptions['vx'] > MAX_X_SPEED):
         #print("Going right")
         action = actions['go_left']
-    elif (perceptions['vx'] < -0.005):
+    elif (perceptions['vx'] < -MAX_X_SPEED):
         #print("Going left")
         action = actions['go_right']
-    elif (perceptions['vy'] < -0.1):
+    elif (perceptions['vy'] < MAX_Y_SPEED):
         #print("SLOW DOWN")
         action = actions['main_engine']
     elif (perceptions['zB']):
