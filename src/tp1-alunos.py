@@ -10,6 +10,13 @@ RENDER_MODE = 'human'
 RENDER_MODE = None #seleccione esta opção para não visualizar o ambiente (testes mais rápidos)
 EPISODES = 1000
 
+rollover_count = 0
+horizonleft_count = 0
+horizonright_count = 0
+outsideleft_count = 0
+outsideright_count = 0
+crashonland_count = 0
+
 env = gym.make("LunarLander-v3", render_mode=RENDER_MODE, 
     continuous=True, gravity=GRAVITY, 
     enable_wind=ENABLE_WIND, wind_power=WIND_POWER, 
@@ -30,12 +37,35 @@ def check_successful_landing(observation):
     stable_velocity = vy>-0.2
     stable_orientation = abs(theta)<np.deg2rad(20)
     stable = stable_velocity and stable_orientation
- 
+    
+    # ----------------------------------------------
+    # Death statistics
+    global rollover_count
+    global horizonleft_count
+    global horizonright_count
+    global outsideleft_count
+    global outsideright_count
+    global crashonland_count
+    if (abs(observation[4])>np.deg2rad(20)):
+        rollover_count += 1
+    elif (observation[0]<-1):
+        horizonleft_count += 1
+    elif (observation[0]>1):
+        horizonright_count += 1
+    elif (observation[0]>0.2):
+        outsideright_count += 1
+    elif (observation[0]<-0.2):
+        outsideleft_count += 1
+    elif (observation[3]>-0.2):
+        crashonland_count += 1
+    # ----------------------------------------------
+
     if legs_touching and on_landing_pad and stable:
         print("✅ Aterragem bem sucedida!")
         return True
 
-    print("⚠️ Aterragem falhada!")        
+    print("⚠️ Aterragem falhada!")
+
     return False
         
 def simulate(steps=1000,seed=None, policy = None):    
@@ -122,15 +152,15 @@ def reactive_agent(observation):
     elif (perceptions['av'] < -MAX_A_SPEED):
         #print("angular velocity right: " + str(perceptions['av']))
         action = actions['rotate_left']
+    elif (perceptions['vy'] < MAX_Y_SPEED):
+        #print("SLOW DOWN")
+        action = actions['main_engine']
     elif (perceptions['vx'] > MAX_X_SPEED):
         #print("Going right")
         action = actions['go_left']
     elif (perceptions['vx'] < -MAX_X_SPEED):
         #print("Going left")
         action = actions['go_right']
-    elif (perceptions['vy'] < MAX_Y_SPEED):
-        #print("SLOW DOWN")
-        action = actions['main_engine']
     elif (perceptions['zB']):
         #print("safe descent")
         action = actions['do_nothing']
@@ -181,7 +211,7 @@ def keyboard_agent(observation):
         print("G", end='')
     if perceptions['zH']:
         print("H", end='')
-    print("   " + str(observation[0]) + " " + str(observation[0]), end='')
+    print("   " + str(observation[0]) + " " + str(observation[1]), end='')
     print()
     
     ###print('observação:',observation)
@@ -209,4 +239,16 @@ for i in range(EPISODES):
     if su>0:
         print('Média de passos das aterragens bem sucedidas:', steps/(su*(i+1))*100)
     print('Taxa de sucesso:', success/(i+1)*100)
-    
+
+# ----------------------------------------------
+# Death statistics
+print()
+print("##################### DEATH STATISTICS #####################")
+print("Rollover count: ", rollover_count)
+print("Horizon left count: ", horizonleft_count)
+print("Horizon right count: ", horizonright_count)
+print("Outside left count: ", outsideleft_count)
+print("Outside right count: ", outsideright_count)
+print("Crash on land count: ", crashonland_count)
+print("############################################################")
+# ----------------------------------------------
