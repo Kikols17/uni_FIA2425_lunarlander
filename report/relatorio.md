@@ -20,7 +20,7 @@
 
 To manage this, we will utilize the built-in perceptions of the lander, and a zoning system to determine safe and unsafe zones, so that the lander can react according to it's placement, as describled by the image:
 
-TODO(image)
+![alt text](image.png)
 
 - **Za** - Lander is in the LANDING ZONE
 - **Zb** - Lander is in the SAFEST DESCENT ZONE
@@ -121,12 +121,12 @@ Like this:
 41. Zg, Vy≳0 → MP0                  [to prevent lander from flying away]
 42. Zg, Vy≲0 → MP2                  [to prevent lander from going down]
 
-19. Zh, Va≳MAS → MP1, Msl1  [to prevent lander spinning out, while still allowing rotation towards the left]
-20. Zh, Va≲0 → MP1, Mrl1    [to prevent lander spinning out]
-21. Zh, Vx≳0 → MP1, Msl2        [to prevent lander moving to the right]
-22. Zh, Vx≲-MXS → MP1, Mrl2     [to prevent lander moving too fast to the left]
-23. Zh, Vy≳0 → MP0                  [to prevent lander from flying away]
-24. Zh, Vy≲0 → MP2                  [to prevent lander from going down]
+43. Zh, Va≳MAS → MP1, Msl1  [to prevent lander spinning out, while still allowing rotation towards the left]
+44. Zh, Va≲0 → MP1, Mrl1    [to prevent lander spinning out]
+45. Zh, Vx≳0 → MP1, Msl2        [to prevent lander moving to the right]
+46. Zh, Vx≲-MXS → MP1, Mrl2     [to prevent lander moving too fast to the left]
+47. Zh, Vy≳0 → MP0                  [to prevent lander from flying away]
+48. Zh, Vy≲0 → MP2                  [to prevent lander from going down]
 
 
 
