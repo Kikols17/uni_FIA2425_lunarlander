@@ -10,6 +10,7 @@ RENDER_MODE = 'human'
 RENDER_MODE = None #seleccione esta opção para não visualizar o ambiente (testes mais rápidos)
 EPISODES = 1000
 
+totaldeath_count = 0
 rollover_count = 0
 horizonleft_count = 0
 horizonright_count = 0
@@ -38,33 +39,35 @@ def check_successful_landing(observation):
     stable_orientation = abs(theta)<np.deg2rad(20)
     stable = stable_velocity and stable_orientation
     
-    # ----------------------------------------------
-    # Death statistics
-    global rollover_count
-    global horizonleft_count
-    global horizonright_count
-    global outsideleft_count
-    global outsideright_count
-    global crashonland_count
-    if (abs(observation[4])>np.deg2rad(20)):
-        rollover_count += 1
-    elif (observation[0]<-1):
-        horizonleft_count += 1
-    elif (observation[0]>1):
-        horizonright_count += 1
-    elif (observation[0]>0.2):
-        outsideright_count += 1
-    elif (observation[0]<-0.2):
-        outsideleft_count += 1
-    elif (observation[3]>-0.2):
-        crashonland_count += 1
-    # ----------------------------------------------
 
     if legs_touching and on_landing_pad and stable:
         print("✅ Aterragem bem sucedida!")
         return True
 
     print("⚠️ Aterragem falhada!")
+    # ----------------------------------------------
+    # Death statistics
+    global totaldeath_count
+    global rollover_count
+    global horizonleft_count
+    global horizonright_count
+    global outsideleft_count
+    global outsideright_count
+    global crashonland_count
+    totaldeath_count += 1
+    if (abs(observation[4])>=np.deg2rad(20)):
+        rollover_count += 1
+    elif (observation[0]<-1):
+        horizonleft_count += 1
+    elif (observation[0]>1):
+        horizonright_count += 1
+    elif (observation[0]<-0.2):
+        outsideleft_count += 1
+    elif (observation[0]>0.2):
+        outsideright_count += 1
+    elif (observation[3]>-0.2):
+        crashonland_count += 1
+    # ----------------------------------------------
 
     return False
         
@@ -138,57 +141,83 @@ def reactive_agent(observation):
     actions = get_actions()
     perceptions = get_perceptions(observation)
 
-    MAX_A_SPEED = 0.05
-    MAX_X_SPEED = 0.005
-    MAX_Y_SPEED = -0.1
+    ZERO_A_SPEED = 0.05     # Absolute of the speed at which the angular velocity is considered ≃0
+    ZERO_X_SPEED = 0.005    # Absolute of the speed at which the x velocity is considered ≃0
+    ZERO_Y_SPEED = 0.1      # Absolute of the speed at which the y velocity is considered ≃0
+
+    MAX_A_SPEED = 0.05      # Absolute of the maximum angular velocity
+    MAX_X_SPEED = 0.005     # Absolute of the maximum x velocity
+    MAX_Y_SPEED = 0.1       # Absolute of the maximum y velocity
 
 
+    ##### ZONE A #####
     if (perceptions['zA']):
         #print("ready to land")
         action = actions['do_nothing']
-    elif (perceptions['av'] > MAX_A_SPEED):
+
+    elif (perceptions['av'] > ZERO_A_SPEED):
         #print("angular velocity left: " + str(perceptions['av']))
         action = actions['rotate_right']
-    elif (perceptions['av'] < -MAX_A_SPEED):
+    elif (perceptions['av'] < -ZERO_A_SPEED):
         #print("angular velocity right: " + str(perceptions['av']))
         action = actions['rotate_left']
-    elif (perceptions['vy'] < MAX_Y_SPEED):
-        #print("SLOW DOWN")
-        action = actions['main_engine']
-    elif (perceptions['vx'] > MAX_X_SPEED):
+    elif (perceptions['vx'] > ZERO_X_SPEED):
         #print("Going right")
         action = actions['go_left']
-    elif (perceptions['vx'] < -MAX_X_SPEED):
+    elif (perceptions['vx'] < -ZERO_X_SPEED):
         #print("Going left")
         action = actions['go_right']
+    elif (perceptions['vy'] < -ZERO_Y_SPEED):
+        #print("SLOW DOWN")
+        action = actions['main_engine']
+    elif (perceptions['vy'] > ZERO_Y_SPEED):
+        #print("stop going up")
+        action = actions['do_nothing']
+
+    ##### ZONE B #####
     elif (perceptions['zB']):
         #print("safe descent")
         action = actions['do_nothing']
+
+    ##### ZONE C #####
     elif (perceptions['zC']):
         #print("moving right to land")
         action = actions['go_right']
+
+    ##### ZONE D #####
     elif (perceptions['zD']):
         #print("moving left to land")
         action = actions['go_left']
+
+    ##### ZONE E #####
     elif (perceptions['zE']):
         #print("unsafe left zone, move up!")
         action = actions['main_engine']
+
+    ##### ZONE F #####
     elif (perceptions['zF']):
         #print("unsafe right zone, move up!")
         action = actions['main_engine']
+
+    ##### ZONE G #####
     elif (perceptions['zG']):
         #print("safe left zone, move right")
         action = actions['go_right']
+
+    ##### ZONE H #####
     elif (perceptions['zH']):
         #print("safe right zone, move left")
         action = actions['go_left']
-    
+
+
     else:
         #print("hovering")
         action = actions['do_nothing']
     return action
-    
-    
+
+
+
+
 def keyboard_agent(observation):
     action = [0,0] 
     keys = pygame.key.get_pressed()
@@ -244,6 +273,7 @@ for i in range(EPISODES):
 # Death statistics
 print()
 print("##################### DEATH STATISTICS #####################")
+print("Total death count: ", totaldeath_count)
 print("Rollover count: ", rollover_count)
 print("Horizon left count: ", horizonleft_count)
 print("Horizon right count: ", horizonright_count)
