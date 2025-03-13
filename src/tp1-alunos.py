@@ -311,13 +311,49 @@ def reactive_agent(observation):
         action = actions['do_nothing']
 
     ##### ZONE G #####
+    elif (perceptions['zG'] and perceptions['av'] > ZERO_A_SPEED):
+        #print("angular velocity left: " + str(perceptions['av']))
+        action = actions['rotate_right']
+    elif (perceptions['zG'] and perceptions['av'] < -ZERO_A_SPEED):
+        #print("angular velocity right: " + str(perceptions['av']))
+        action = actions['rotate_left']
+    elif (perceptions['zG'] and perceptions['vx'] > ZERO_X_SPEED):
+        #print("Going right")
+        action = actions['go_left']
+    elif (perceptions['zG'] and perceptions['vx'] < -MAX_X_SPEED):
+        #print("Going left")
+        action = actions['go_right']
+    elif (perceptions['zG'] and perceptions['vy'] < -ZERO_Y_SPEED):
+        #print("SLOW DOWN")
+        action = actions['main_engine']
+    elif (perceptions['zG'] and perceptions['vy'] > ZERO_Y_SPEED):
+        #print("stop going up")
+        action = actions['do_nothing']
     elif (perceptions['zG']):
-        #print("safe left zone, move right")
+        #print("hovering")
         action = actions['go_right']
 
     ##### ZONE H #####
+    elif (perceptions['zH'] and perceptions['av'] > ZERO_A_SPEED):
+        #print("angular velocity left: " + str(perceptions['av']))
+        action = actions['rotate_right']
+    elif (perceptions['zH'] and perceptions['av'] < -ZERO_A_SPEED):
+        #print("angular velocity right: " + str(perceptions['av']))
+        action = actions['rotate_left']
+    elif (perceptions['zH'] and perceptions['vx'] > MAX_X_SPEED):
+        #print("Going right")
+        action = actions['go_left']
+    elif (perceptions['zH'] and perceptions['vx'] < -ZERO_X_SPEED):
+        #print("Going left")
+        action = actions['go_right']
+    elif (perceptions['zH'] and perceptions['vy'] < -ZERO_Y_SPEED):
+        #print("SLOW DOWN")
+        action = actions['main_engine']
+    elif (perceptions['zH'] and perceptions['vy'] > ZERO_Y_SPEED):
+        #print("stop going up")
+        action = actions['do_nothing']
     elif (perceptions['zH']):
-        #print("safe right zone, move left")
+        #print("hovering")
         action = actions['go_left']
 
 
