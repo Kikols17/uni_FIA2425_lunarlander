@@ -7,7 +7,7 @@ WIND_POWER = 15.0
 TURBULENCE_POWER = 0.0
 GRAVITY = -10.0
 RENDER_MODE = 'human'
-#RENDER_MODE = None #seleccione esta opção para não visualizar o ambiente (testes mais rápidos)
+RENDER_MODE = None #seleccione esta opção para não visualizar o ambiente (testes mais rápidos)
 EPISODES = 1000
 
 totaldeath_count = 0
@@ -94,7 +94,7 @@ def get_perceptions(observation):
 
     SAFE_DESCENT_WIDTH = 0.2
 
-    SAFE_ZONE_HEIGHT = 0.5
+    SAFE_ZONE_HEIGHT = 0.1
 
     px = observation[0]
     py = observation[1]
@@ -128,8 +128,6 @@ def get_actions():
         'main_engine': [1.0, 0],
         'rotate_left': [0.1, -0.55],
         'rotate_right': [0.1, 0.55],
-        'go_left': [0.1, -0.8],
-        'go_right': [0.1, 0.8]
     }
     
     return actions
@@ -162,16 +160,16 @@ def reactive_agent(observation):
         action = actions['rotate_left']
     elif (perceptions['zA'] and perceptions['vx'] > ZERO_X_SPEED):
         #print("landing, moving sideways, go left")
-        action = actions['go_left']
+        action = actions['rotate_left']
     elif (perceptions['zA'] and perceptions['vx'] < -ZERO_X_SPEED):
         #print("landing, moving sideways, go right")
-        action = actions['go_right']
-    elif (perceptions['zA'] and perceptions['vy'] < -ZERO_Y_SPEED):
-        #print("landing, SLOW DOWN")
-        action = actions['main_engine']
+        action = actions['rotate_right']
     elif (perceptions['zA'] and perceptions['vy'] > ZERO_Y_SPEED):
         #print("landing, stop going up")
         action = actions['do_nothing']
+    elif (perceptions['zA'] and perceptions['vy'] < -ZERO_Y_SPEED):
+        #print("landing, SLOW DOWN")
+        action = actions['main_engine']
     elif (perceptions['zA']):
         #print("ready to land")
         action = actions['do_nothing']
@@ -185,16 +183,16 @@ def reactive_agent(observation):
         action = actions['rotate_left']
     elif (perceptions['zB'] and perceptions['vx'] > ZERO_X_SPEED):
         #print("safe descent, moving sideways, go left")
-        action = actions['go_left']
+        action = actions['rotate_left']
     elif (perceptions['zB'] and perceptions['vx'] < -ZERO_X_SPEED):
         #print("safe descent, moving sideways, go right")
-        action = actions['go_right']
-    elif (perceptions['zB'] and perceptions['vy'] < -MAX_Y_SPEED):
-        #print("safe descent, SLOW DOWN")
-        action = actions['main_engine']
+        action = actions['rotate_right']
     elif (perceptions['zB'] and perceptions['vy'] > ZERO_Y_SPEED):
         #print("safe descent, stop going up")
         action = actions['do_nothing']
+    elif (perceptions['zB'] and perceptions['vy'] < -MAX_Y_SPEED):
+        #print("safe descent, SLOW DOWN")
+        action = actions['main_engine']
     elif (perceptions['zB']):
         #print("safe descent")
         action = actions['do_nothing']
@@ -208,19 +206,19 @@ def reactive_agent(observation):
         action = actions['rotate_left']
     elif (perceptions['zC'] and perceptions['vx'] > MAX_X_SPEED):
         #print("on the left to land, moving sideways too fast, go left")
-        action = actions['go_left']
+        action = actions['rotate_left']
     elif (perceptions['zC'] and perceptions['vx'] < -ZERO_X_SPEED):
         #print("on the left to land, moving sideways, go right")
-        action = actions['go_right']
-    elif (perceptions['zC'] and perceptions['vy'] < -MAX_Y_SPEED):
-        #print("on the left to land, SLOW DOWN")
-        action = actions['main_engine']
+        action = actions['rotate_right']
     elif (perceptions['zC'] and perceptions['vy'] > ZERO_Y_SPEED):
         #print("on the left to land, stop going up")
         action = actions['do_nothing']
+    elif (perceptions['zC'] and perceptions['vy'] < -MAX_Y_SPEED):
+        #print("on the left to land, SLOW DOWN")
+        action = actions['main_engine']
     elif (perceptions['zC']):
         #print("on the left to land")
-        action = actions['go_right']
+        action = actions['rotate_right']
 
     ##### ZONE D #####
     elif (perceptions['zD'] and perceptions['av'] > MAX_A_SPEED):
@@ -231,19 +229,19 @@ def reactive_agent(observation):
         action = actions['rotate_left']
     elif (perceptions['zD'] and perceptions['vx'] > ZERO_X_SPEED):
         #print("on the left to land, moving sideways, go left")
-        action = actions['go_left']
+        action = actions['rotate_left']
     elif (perceptions['zD'] and perceptions['vx'] < -MAX_X_SPEED):
         #print("on the left to land, moving sideways too fast, go right")
-        action = actions['go_right']
-    elif (perceptions['zD'] and perceptions['vy'] < -MAX_Y_SPEED):
-        #print("on the left to land, SLOW DOWN")
-        action = actions['main_engine']
+        action = actions['rotate_right']
     elif (perceptions['zD'] and perceptions['vy'] > ZERO_Y_SPEED):
         #print("on the left to land, stop going up")
         action = actions['do_nothing']
+    elif (perceptions['zD'] and perceptions['vy'] < -MAX_Y_SPEED):
+        #print("on the left to land, SLOW DOWN")
+        action = actions['main_engine']
     elif (perceptions['zD']):
         #print("on the right to land")
-        action = actions['go_left']
+        action = actions['rotate_left']
 
     ##### ZONE E #####
     elif (perceptions['zE'] and perceptions['av'] > ZERO_A_SPEED):
@@ -254,19 +252,19 @@ def reactive_agent(observation):
         action = actions['rotate_left']
     elif (perceptions['zE'] and perceptions['vx'] > MAX_X_SPEED):
         #print("left of landing zone, moving sideways too fast, go left")
-        action = actions['go_left']
+        action = actions['rotate_left']
     elif (perceptions['zE'] and perceptions['vx'] < -ZERO_X_SPEED):
         #print("left of landing zone, moving sideways, go right")
-        action = actions['go_right']
-    elif (perceptions['zE'] and perceptions['vy'] < -ZERO_Y_SPEED):
-        #print("left of landing zone, SLOW DOWN")
-        action = actions['main_engine']
+        action = actions['rotate_right']
     elif (perceptions['zE'] and perceptions['vy'] > MAX_Y_SPEED):
         #print("left of landing zone, stop going up")
         action = actions['do_nothing']
+    elif (perceptions['zE'] and perceptions['vy'] < -ZERO_Y_SPEED):
+        #print("left of landing zone, SLOW DOWN")
+        action = actions['main_engine']
     elif (perceptions['zE']):
         #print("left of landing zone")
-        action = actions['go_right']
+        action = actions['rotate_right']
 
     ##### ZONE F #####
     elif (perceptions['zF'] and perceptions['av'] > ZERO_A_SPEED):
@@ -277,19 +275,19 @@ def reactive_agent(observation):
         action = actions['rotate_left']
     elif (perceptions['zF'] and perceptions['vx'] > ZERO_X_SPEED):
         #print("right of landing zone, moving sideways, go left")
-        action = actions['go_left']
+        action = actions['rotate_left']
     elif (perceptions['zF'] and perceptions['vx'] < -MAX_X_SPEED):
         #print("right of landing zone, moving sideways too fast, go right")
-        action = actions['go_right']
-    elif (perceptions['zF'] and perceptions['vy'] < -ZERO_Y_SPEED):
-        #print("right of landing zone, SLOW DOWN")
-        action = actions['main_engine']
+        action = actions['rotate_right']
     elif (perceptions['zF'] and perceptions['vy'] > MAX_Y_SPEED):
         #print("right of landing zone, stop going up")
         action = actions['do_nothing']
+    elif (perceptions['zF'] and perceptions['vy'] < -ZERO_Y_SPEED):
+        #print("right of landing zone, SLOW DOWN")
+        action = actions['main_engine']
     elif (perceptions['zF']):
         #print("right of landing zone")
-        action = actions['go_left']
+        action = actions['rotate_left']
 
     elif (perceptions['av'] > ZERO_A_SPEED):
         #print("angular velocity left: " + str(perceptions['av']))
@@ -299,16 +297,16 @@ def reactive_agent(observation):
         action = actions['rotate_left']
     elif (perceptions['vx'] > ZERO_X_SPEED):
         #print("Going right")
-        action = actions['go_left']
+        action = actions['rotate_left']
     elif (perceptions['vx'] < -ZERO_X_SPEED):
         #print("Going left")
-        action = actions['go_right']
-    elif (perceptions['vy'] < -ZERO_Y_SPEED):
-        #print("SLOW DOWN")
-        action = actions['main_engine']
+        action = actions['rotate_right']
     elif (perceptions['vy'] > ZERO_Y_SPEED):
         #print("stop going up")
         action = actions['do_nothing']
+    elif (perceptions['vy'] < -ZERO_Y_SPEED):
+        #print("SLOW DOWN")
+        action = actions['main_engine']
 
     ##### ZONE G #####
     elif (perceptions['zG'] and perceptions['av'] > ZERO_A_SPEED):
@@ -319,16 +317,16 @@ def reactive_agent(observation):
         action = actions['rotate_left']
     elif (perceptions['zG'] and perceptions['vx'] > ZERO_X_SPEED):
         #print("Going right")
-        action = actions['go_left']
+        action = actions['rotate_left']
     elif (perceptions['zG'] and perceptions['vx'] < -ZERO_X_SPEED):
         #print("Going left")
-        action = actions['go_right']
+        action = actions['rotate_right']
+    elif (perceptions['zG'] and perceptions['vy'] > ZERO_Y_SPEED):
+        #print("stop going up")
+        action = actions['do_nothing']
     elif (perceptions['zG'] and perceptions['vy'] < ZERO_Y_SPEED):
         #print("SLOW DOWN")
         action = actions['main_engine']
-    elif (perceptions['zG'] and perceptions['vy'] > MAX_Y_SPEED):
-        #print("stop going up")
-        action = actions['do_nothing']
     elif (perceptions['zG']):
         #print("hovering")
         action = actions['main_engine']
@@ -342,16 +340,16 @@ def reactive_agent(observation):
         action = actions['rotate_left']
     elif (perceptions['zH'] and perceptions['vx'] > ZERO_X_SPEED):
         #print("Going right")
-        action = actions['go_left']
+        action = actions['rotate_left']
     elif (perceptions['zH'] and perceptions['vx'] < -ZERO_X_SPEED):
         #print("Going left")
-        action = actions['go_right']
+        action = actions['rotate_right']
+    elif (perceptions['zH'] and perceptions['vy'] > ZERO_Y_SPEED):
+        #print("stop going up")
+        action = actions['do_nothing']
     elif (perceptions['zH'] and perceptions['vy'] < ZERO_Y_SPEED):
         #print("SLOW DOWN")
         action = actions['main_engine']
-    elif (perceptions['zH'] and perceptions['vy'] > MAX_Y_SPEED):
-        #print("stop going up")
-        action = actions['do_nothing']
     elif (perceptions['zH']):
         #print("hovering")
         action = actions['main_engine']
