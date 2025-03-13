@@ -20,9 +20,11 @@
 \usepackage{graphicx}
 \usepackage[inkscapelatex=false]{svg}
 \usepackage[colorlinks=true, allcolors=blue]{hyperref}
+\usepackage{tocloft} % For customizing the TOC
+
 
 \title{\textbf{Lunar Lander}}
-\subtitle{Trabalho Prático Nº1 para a cadeira de Fundamentos de Inteligência Artificial}
+\subtitle{Project #1 for Artificial Intelligence Fundamentals}
 
 \author{Francisco Silva, Miguel Pereira and Guilherme Rodrigues 
 \\ Nº 2022213583, 2022232552 and 2022232102 \\ \\
@@ -36,6 +38,10 @@ University of Coimbra, Coimbra, Portugal
 
 \begin{document}
 \maketitle
+
+\newpage
+\tableofcontents
+\newpage
 
 \section{Perceptions}
 We use built-in perceptions of the lander and a zoning system that determines safe and unsafe zones, so that the lander reacts according to its placement, as described in Figure \ref{fig:zoningsystem}.
@@ -108,6 +114,8 @@ With the basic Production System we can create the final Production System, chan
 \subsection{Final Production System}
 The final production system adjusts control rules based on the current zone and observed velocities. 
 \\
+
+\noindent{Zone A  Rules:}
 \begin{enumerate}
     \item Za, $V_a \geq 0$ $\rightarrow$ MP1, Msl1 \hfill prevents lander spinning out
     \item Za, $V_a \leq 0$ $\rightarrow$ MP1, Mrl1 \hfill prevents lander spinning out
@@ -115,42 +123,70 @@ The final production system adjusts control rules based on the current zone and 
     \item Za, $V_x \leq 0$ $\rightarrow$ MP1, Mrl2 \hfill prevents lander moving left
     \item Za, $V_y \geq 0$ $\rightarrow$ MP0 \hfill prevents lander flying away
     \item Za, $V_y \leq 0$ $\rightarrow$ MP2 \hfill prevents lander descending too fast
+\end{enumerate}
+    
+\noindent{Zone B  Rules:}
+\begin{enumerate}
     \item Zb, $V_a \geq 0$ $\rightarrow$ MP1, Msl1 \hfill prevents lander spinning out
     \item Zb, $V_a \leq 0$ $\rightarrow$ MP1, Mrl1 \hfill prevents lander spinning out
     \item Zb, $V_x \geq 0$ $\rightarrow$ MP1, Msl2 \hfill prevents lander moving right
     \item Zb, $V_x \leq 0$ $\rightarrow$ MP1, Mrl2 \hfill prevents lander moving left
     \item Zb, $V_y \geq 0$ $\rightarrow$ MP0 \hfill prevents lander flying away
     \item Zb, $V_y \leq -\text{MYS}$ $\rightarrow$ MP2 \hfill prevents lander descending too fast
+\end{enumerate}
+    
+\noindent{Zone C  Rules:}
+\begin{enumerate}
     \item Zc, $V_a \geq 0$ $\rightarrow$ MP1, Msl1 \hfill prevents lander spinning out
     \item Zc, $V_a \leq -\text{MAS}$ $\rightarrow$ MP1, Mrl1 \hfill prevents spinning, allows rotation right
     \item Zc, $V_x \geq \text{MXS}$ $\rightarrow$ MP1, Msl2 \hfill prevents moving too fast right
     \item Zc, $V_x \leq 0$ $\rightarrow$ MP1, Mrl2 \hfill prevents moving left
     \item Zc, $V_y \geq 0$ $\rightarrow$ MP0 \hfill prevents flying away
     \item Zc, $V_y \leq -\text{MYX}$ $\rightarrow$ MP2 \hfill prevents descending too fast, allows descent
+\end{enumerate}
+    
+\noindent{Zone D  Rules:}
+    \begin{enumerate}
     \item Zd, $V_a \geq \text{MAS}$ $\rightarrow$ MP1, Msl1 \hfill prevents spinning, allows rotation left
     \item Zd, $V_a \leq 0$ $\rightarrow$ MP1, Mrl1 \hfill prevents spinning
     \item Zd, $V_x \geq 0$ $\rightarrow$ MP1, Msl2 \hfill prevents moving right
     \item Zd, $V_x \leq -\text{MXS}$ $\rightarrow$ MP1, Mrl2 \hfill prevents moving too fast left
     \item Zd, $V_y \geq 0$ $\rightarrow$ MP0 \hfill prevents flying away
     \item Zd, $V_y \leq \text{MYX}$ $\rightarrow$ MP2 \hfill prevents descending too fast, allows descent
+\end{enumerate}
+    
+\noindent{Zone A  Rules:}
+\begin{enumerate}
     \item Ze, $V_a \geq 0$ $\rightarrow$ MP1, Msl1 \hfill prevents spinning
     \item Ze, $V_a \leq 0$ $\rightarrow$ MP1, Mrl1 \hfill prevents spinning
     \item Ze, $V_x \geq \text{MXS}$ $\rightarrow$ MP1, Msl2 \hfill prevents moving too fast right
     \item Ze, $V_x \leq 0$ $\rightarrow$ MP1, Mrl2 \hfill prevents moving left
     \item Ze, $V_y \geq \text{MYS}$ $\rightarrow$ MP0 \hfill prevents flying up too fast
     \item Ze, $V_y \leq 0$ $\rightarrow$ MP2 \hfill prevents descending too fast
+    \end{enumerate}
+    
+\noindent{Zone F  Rules:}
+\begin{enumerate}
     \item Zf, $V_a \geq 0$ $\rightarrow$ MP1, Msl1 \hfill prevents spinning
     \item Zf, $V_a \leq 0$ $\rightarrow$ MP1, Mrl1 \hfill prevents spinning
     \item Zf, $V_x \geq 0$ $\rightarrow$ MP1, Msl2 \hfill prevents moving right
     \item Zf, $V_x \leq \text{MXS}$ $\rightarrow$ MP1, Mrl2 \hfill prevents moving too fast left
     \item Zf, $V_y \geq \text{MYS}$ $\rightarrow$ MP0 \hfill prevents flying up too fast
     \item Zf, $V_y \leq 0$ $\rightarrow$ MP2 \hfill prevents descending too fast
+\end{enumerate}
+    
+\noindent{Zone G  Rules:}
+\begin{enumerate}
     \item Zg, $V_a \geq 0$ $\rightarrow$ MP1, Msl1 \hfill prevents spinning
     \item Zg, $V_a \leq -\text{MAS}$ $\rightarrow$ MP1, Mrl1 \hfill prevents spinning, allows rotation right
     \item Zg, $V_x \geq \text{MXS}$ $\rightarrow$ MP1, Msl2 \hfill prevents moving too fast right
     \item Zg, $V_x \leq 0$ $\rightarrow$ MP1, Mrl2 \hfill prevents moving left
     \item Zg, $V_y \geq 0$ $\rightarrow$ MP0 \hfill prevents flying away
     \item Zg, $V_y \leq 0$ $\rightarrow$ MP2 \hfill prevents descending too fast
+    \end{enumerate}
+    
+\noindent{Zone H  Rules:}
+\begin{enumerate}
     \item Zh, $V_a \geq \text{MAS}$ $\rightarrow$ MP1, Msl1 \hfill prevents spinning, allows rotation left
     \item Zh, $V_a \leq 0$ $\rightarrow$ MP1, Mrl1 \hfill prevents spinning
     \item Zh, $V_x \geq 0$ $\rightarrow$ MP1, Msl2 \hfill prevents moving right
@@ -161,6 +197,5 @@ The final production system adjusts control rules based on the current zone and 
 
 \section{Conclusion}
 The presented control system emphasizes stability prior to descent, relying on zone-specific velocity constraints and corrective actions. Further improvement is possible by optimizing threshold values, adjusting motor actions, modifying zone boundaries, and incorporating combined perceptions to handle complex scenarios beyond the current system's capabilities.
-
 
 \end{document}
