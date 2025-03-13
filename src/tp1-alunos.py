@@ -94,7 +94,7 @@ def get_perceptions(observation):
 
     SAFE_DESCENT_WIDTH = 0.2
 
-    SAFE_ZONE_HEIGHT = 0.1
+    SAFE_ZONE_HEIGHT = 0.4
 
     px = observation[0]
     py = observation[1]
@@ -289,24 +289,24 @@ def reactive_agent(observation):
         #print("right of landing zone")
         action = actions['rotate_left']
 
-    elif (perceptions['av'] > ZERO_A_SPEED):
-        #print("angular velocity left: " + str(perceptions['av']))
-        action = actions['rotate_right']
-    elif (perceptions['av'] < -ZERO_A_SPEED):
-        #print("angular velocity right: " + str(perceptions['av']))
-        action = actions['rotate_left']
-    elif (perceptions['vx'] > ZERO_X_SPEED):
-        #print("Going right")
-        action = actions['rotate_left']
-    elif (perceptions['vx'] < -ZERO_X_SPEED):
-        #print("Going left")
-        action = actions['rotate_right']
-    elif (perceptions['vy'] > ZERO_Y_SPEED):
-        #print("stop going up")
-        action = actions['do_nothing']
-    elif (perceptions['vy'] < -ZERO_Y_SPEED):
-        #print("SLOW DOWN")
-        action = actions['main_engine']
+    ##elif (perceptions['av'] > ZERO_A_SPEED):
+    ##    #print("angular velocity left: " + str(perceptions['av']))
+    ##    action = actions['rotate_right']
+    ##elif (perceptions['av'] < -ZERO_A_SPEED):
+    ##    #print("angular velocity right: " + str(perceptions['av']))
+    ##    action = actions['rotate_left']
+    ##elif (perceptions['vx'] > ZERO_X_SPEED):
+    ##    #print("Going right")
+    ##    action = actions['rotate_left']
+    ##elif (perceptions['vx'] < -ZERO_X_SPEED):
+    ##    #print("Going left")
+    ##    action = actions['rotate_right']
+    ##elif (perceptions['vy'] > ZERO_Y_SPEED):
+    ##    #print("stop going up")
+    ##    action = actions['do_nothing']
+    ##elif (perceptions['vy'] < -ZERO_Y_SPEED):
+    ##    #print("SLOW DOWN")
+    ##    action = actions['main_engine']
 
     ##### ZONE G #####
     elif (perceptions['zG'] and perceptions['av'] > ZERO_A_SPEED):
@@ -315,7 +315,7 @@ def reactive_agent(observation):
     elif (perceptions['zG'] and perceptions['av'] < -ZERO_A_SPEED):
         #print("angular velocity right: " + str(perceptions['av']))
         action = actions['rotate_left']
-    elif (perceptions['zG'] and perceptions['vx'] > ZERO_X_SPEED):
+    elif (perceptions['zG'] and perceptions['vx'] > MAX_X_SPEED):
         #print("Going right")
         action = actions['rotate_left']
     elif (perceptions['zG'] and perceptions['vx'] < -ZERO_X_SPEED):
@@ -329,7 +329,7 @@ def reactive_agent(observation):
         action = actions['main_engine']
     elif (perceptions['zG']):
         #print("hovering")
-        action = actions['main_engine']
+        action = actions['rotate_right']
 
     ##### ZONE H #####
     elif (perceptions['zH'] and perceptions['av'] > ZERO_A_SPEED):
@@ -341,7 +341,7 @@ def reactive_agent(observation):
     elif (perceptions['zH'] and perceptions['vx'] > ZERO_X_SPEED):
         #print("Going right")
         action = actions['rotate_left']
-    elif (perceptions['zH'] and perceptions['vx'] < -ZERO_X_SPEED):
+    elif (perceptions['zH'] and perceptions['vx'] < -MAX_X_SPEED):
         #print("Going left")
         action = actions['rotate_right']
     elif (perceptions['zH'] and perceptions['vy'] > ZERO_Y_SPEED):
@@ -352,7 +352,7 @@ def reactive_agent(observation):
         action = actions['main_engine']
     elif (perceptions['zH']):
         #print("hovering")
-        action = actions['main_engine']
+        action = actions['rotate_left']
 
 
     else:
