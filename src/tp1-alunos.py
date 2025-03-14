@@ -2,12 +2,12 @@ import gymnasium as gym
 import numpy as np
 import pygame
 
-ENABLE_WIND = False
+ENABLE_WIND = True
 WIND_POWER = 15.0
 TURBULENCE_POWER = 0.0
 GRAVITY = -10.0
 RENDER_MODE = 'human'
-RENDER_MODE = None #seleccione esta opção para não visualizar o ambiente (testes mais rápidos)
+#RENDER_MODE = None #seleccione esta opção para não visualizar o ambiente (testes mais rápidos)
 EPISODES = 1000
 
 totaldeath_count = 0
@@ -108,6 +108,8 @@ def get_perceptions(observation):
         'zF': px>(LANDING_WIDTH)/2 and py<SAFE_ZONE_HEIGHT,
         'zG': px<-(SAFE_DESCENT_WIDTH)/2 and py>SAFE_ZONE_HEIGHT,
         'zH': px>(SAFE_DESCENT_WIDTH)/2 and py>SAFE_ZONE_HEIGHT,
+        'zh1': px>(SAFE_DESCENT_WIDTH)/2 and py<LANGING_HEIGHT,
+        'zg1': px<-(SAFE_DESCENT_WIDTH)/2 and py<LANGING_HEIGHT,
         'vx': observation[2],
         'vy': observation[3],
         'a': observation[4],
@@ -125,7 +127,7 @@ def get_actions():
 
     actions = {
         'do_nothing': [0, 0],
-        'main_engine': [1.0, 0],
+        'main_engine': [1.0, 0], 
         'rotate_left': [0.1, -0.55],
         'rotate_right': [0.1, 0.55],
         'go_left': [0.1, -0.8],
@@ -148,7 +150,6 @@ def reactive_agent(observation):
     MAX_A_SPEED = 0.1       # Absolute of the maximum angular velocity
     MAX_X_SPEED = 0.01      # Absolute of the maximum x velocity
     MAX_Y_SPEED = 0.1       # Absolute of the maximum y velocity
-
 
     ##### ZONE A #####
     if (perceptions['zA'] and perceptions['l'] and perceptions['r']):
@@ -311,20 +312,43 @@ def reactive_agent(observation):
         action = actions['do_nothing']
 
     ##### ZONE G #####
-    elif (perceptions['zG']):
-        #print("safe left zone, move right")
+    elif (perceptions['zG'] and perceptions['vy'] > ZERO_Y_SPEED):
+        action = actions['main_engine']
+    elif (perceptions['zG'] and perceptions['vx'] > ZERO_X_SPEED):
+        action = actions['main_engine']
+    elif (perceptions['zG'] and perceptions['vx'] < -ZERO_X_SPEED):
         action = actions['go_right']
+    elif (perceptions['zG'] and perceptions['av'] > ZERO_A_SPEED):
+        action = actions['rotate_right']
+    elif (perceptions['zG'] and perceptions['av'] < -ZERO_A_SPEED):
+        action = actions['main_engine']
 
     ##### ZONE H #####
-    elif (perceptions['zH']):
-        #print("safe right zone, move left")
+    elif (perceptions['zH'] and perceptions['vy'] > ZERO_Y_SPEED):
+        action = actions['main_engine']
+    elif (perceptions['zH'] and perceptions['vx'] > ZERO_X_SPEED):
         action = actions['go_left']
+    elif (perceptions['zH'] and perceptions['vx'] < -ZERO_X_SPEED):
+        action = actions['main_engine']
+    elif (perceptions['zH'] and perceptions['av'] > ZERO_A_SPEED):
+        action = actions['main_engine']  
+    elif (perceptions['zH'] and perceptions['av'] < -ZERO_A_SPEED):
+        action = actions['rotate_left']
+    
+    ##### ZONE H1 #####
+    elif (perceptions['zh1']):
+        #print("safe right zone, move left")
+        action = actions['main_engine']
 
-
+    ##### ZONE G1 #####
+    elif (perceptions['zg1']):
+        #print("safe right zone, move left")
+        action = actions['main_engine']
     else:
         #print("hovering")
         action = actions['do_nothing']
     return action
+
 
 
 
