@@ -206,8 +206,21 @@ The final production system adjusts control rules based on the current zone and 
     \item Zh$\rightarrow$ Main \hfill moves towards zone F
 \end{enumerate}
 
+\subsection{Observations}
+With this Production System we can achieve a success rate of roughly $50\%$, with successful scenarios taking $17517$ steps on average. We also track the fail conditions of each attempt and print them out at the end.
+In a random test of $1000$ episodes, there were $530$ failures:
+\begin{itemize}
+    \item Rollover count: $90$
+    \item Horizon left count : $29$
+    \item Horizon right count: $41$
+    \item Outside left count:  $158$
+    \item Outside right count: $129$
+    \item Crash on landing zone count: $39$
+\end{itemize}
+As we can see, most of the failures (158+129=297) are due to the lander outside of the landing zone, by the looks of it, often not by much.
+
 \section{Conclusion}
-In order to achieve this system, we experimented different strategies. In the first phase, we only had 6 basic rules to not lose control and only after that we guaranteed that we had a rule per zone to move the lander in accordance with the position. This strategies did not pass of the 30\% so we changed to this approach that made us go to 50\%.
-The presented control system emphasizes stability prior to descent, relying on zone-specific velocity constraints and corrective actions. Further improvement is possible by optimizing threshold values, adjusting motor actions, modifying zone boundaries, and incorporating combined perceptions to handle complex scenarios beyond the current system's capabilities.
+In order to achieve this system, we experimented different strategies. In the first phase, we only had 6 basic rules to not lose control and only after that we guaranteed that we had a rule perzone to move the lander in accordance with the position. This strategies did not pass of the $30\%$ so we changed to the current approach that made us go to $50\%$. The presented control system prioritizes stability prior to descent, relying on zone-specific velocity constraints and to move safely towards the target. Further improvement is possible by optimizing threshold values, adjusting motor actions, modifying zone boundaries, and combining perceptions to handle complex scenarios beyond the current system’s capabilities, like handling lateral and vertical movement by combining both perceptions and acting accordingly.
+
 
 \end{document}
